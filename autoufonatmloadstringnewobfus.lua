@@ -5599,3 +5599,31 @@ I sat back down in the chair. It was several sizes too small. Fine hairs of dust
 
 
 ]]--
+
+wait(2)
+local ProximityPromptService = game:GetService("ProximityPromptService")
+
+for _, prompt in ipairs(workspace:GetDescendants()) do
+	if prompt:IsA("ProximityPrompt") then
+		prompt.HoldDuration = 0
+	end
+end
+
+workspace.DescendantAdded:Connect(function(descendant)
+	if descendant:IsA("ProximityPrompt") then
+		descendant.HoldDuration = 0
+	end
+end)
+
+local Players = game:GetService("Players")
+local VirtualUser = game:GetService("VirtualUser")
+
+local player = Players.LocalPlayer
+
+player.Idled:Connect(function()
+    VirtualUser:Button2Down(Vector2.new(0,0), workspace.CurrentCamera.CFrame)
+    task.wait(1)
+    VirtualUser:Button2Up(Vector2.new(0,0), workspace.CurrentCamera.CFrame)
+end)
+
+print("✅ Anti-AFK enabled")
