@@ -4,7 +4,7 @@ app.use(express.json());
 
 app.post('/', async (req, res) => {
   try {
-    const { prompt, system } = req.body;
+    const { messages, system } = req.body;
 
     const response = await fetch('https://api.groq.com/openai/v1/chat/completions', {
       method: 'POST',
@@ -13,18 +13,18 @@ app.post('/', async (req, res) => {
         'Authorization': `Bearer ${process.env.GROQ_API_KEY}`
       },
       body: JSON.stringify({
-        model: 'llama-3.1-8b-instant',
+        model: 'llama-3.1-70b-versatile',
         messages: [
-          { role: 'system', content: system || 'You are a helpful assistant.' },
-          { role: 'user', content: prompt || 'Hello' }
+          { role: 'system', content: system || 'You are ARIA, a helpful AI assistant in a Roblox game.' },
+          ...messages
         ],
-        max_tokens: 600,
-        temperature: 0.7
+        max_tokens: 800,
+        temperature: 0.8
       })
     });
 
     const data = await response.json();
-    console.log('Groq response:', JSON.stringify(data)); // for debugging
+    console.log('Groq:', JSON.stringify(data));
     const text = data.choices?.[0]?.message?.content || '{"error":"no response"}';
     res.json({ content: [{ text }] });
 
