@@ -13,7 +13,7 @@ app.post('/', async (req, res) => {
         'Authorization': `Bearer ${process.env.GROQ_API_KEY}`
       },
       body: JSON.stringify({
-        model: 'llama-3.3-70b-versatile',
+        model: 'moonshotai/kimi-k2-instruct',
         messages: [
           { role: 'system', content: system || 'You are ARIA, a helpful AI assistant.' },
           ...messages
