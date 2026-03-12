@@ -13,19 +13,19 @@ app.post('/', async (req, res) => {
         'Authorization': `Bearer ${process.env.GROQ_API_KEY}`
       },
       body: JSON.stringify({
-        model: 'llama-3.1-70b-versatile',
+        model: 'llama-3.3-70b-versatile',
         messages: [
-          { role: 'system', content: system || 'You are ARIA, a helpful AI assistant in a Roblox game.' },
+          { role: 'system', content: system },
           ...messages
         ],
-        max_tokens: 800,
-        temperature: 0.8
+        max_tokens: 1024,
+        temperature: 0.85
       })
     });
 
     const data = await response.json();
-    console.log('Groq:', JSON.stringify(data));
-    const text = data.choices?.[0]?.message?.content || '{"error":"no response"}';
+    console.log('Groq response:', JSON.stringify(data));
+    const text = data.choices?.[0]?.message?.content || 'Sorry, I could not respond right now.';
     res.json({ content: [{ text }] });
 
   } catch(e) {
