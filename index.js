@@ -15,18 +15,21 @@ app.post('/', async (req, res) => {
       body: JSON.stringify({
         model: 'llama-3.1-8b-instant',
         messages: [
-          { role: 'system', content: system },
-          { role: 'user',   content: prompt }
+          { role: 'system', content: system || 'You are a helpful assistant.' },
+          { role: 'user', content: prompt || 'Hello' }
         ],
-        max_tokens: 600
+        max_tokens: 600,
+        temperature: 0.7
       })
     });
 
     const data = await response.json();
+    console.log('Groq response:', JSON.stringify(data)); // for debugging
     const text = data.choices?.[0]?.message?.content || '{"error":"no response"}';
     res.json({ content: [{ text }] });
 
   } catch(e) {
+    console.error(e);
     res.status(500).json({ error: e.message });
   }
 });
