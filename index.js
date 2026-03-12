@@ -6,20 +6,24 @@ app.post('/', async (req, res) => {
   try {
     const { prompt, system } = req.body;
 
-    const response = await fetch(
-      `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${process.env.GEMINI_API_KEY}`,
-      {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          system_instruction: { parts: [{ text: system }] },
-          contents: [{ parts: [{ text: prompt }] }]
-        })
-      }
-    );
+    const response = await fetch('https://api.groq.com/openai/v1/chat/completions', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${process.env.GROQ_API_KEY}`
+      },
+      body: JSON.stringify({
+        model: 'llama-3.1-8b-instant',
+        messages: [
+          { role: 'system', content: system },
+          { role: 'user',   content: prompt }
+        ],
+        max_tokens: 600
+      })
+    });
 
     const data = await response.json();
-    const text = data.candidates?.[0]?.content?.parts?.[0]?.text || '{"error":"no response"}';
+    const text = data.choices?.[0]?.message?.content || '{"error":"no response"}';
     res.json({ content: [{ text }] });
 
   } catch(e) {
